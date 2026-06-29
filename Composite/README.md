@@ -8,7 +8,48 @@
 ## 模式定义
 将对象组合成树形结构以表示”部分-整体“的层次结构。Composite使得用户对单个对象和组合对象的使用具有一致性(稳定)。
 ——《设计模式》GoF
+## 结构
 
+```mermaid
+classDiagram
+    direction TB
+
+    class Component {
+        <<abstract>>
+        +process() void*
+    }
+
+    class Composite {
+        -string name
+        -list~Component*~ elements
+        +add(Component*) void
+        +remove(Component*) void
+        +process() void
+    }
+
+    class Leaf {
+        -string name
+        +process() void
+    }
+
+    Component <|-- Composite
+    Component <|-- Leaf
+    Composite o-- Component : elements
+```
+
+> `Composite` 既继承 `Component`（is-a），又持有 `Component*` 集合（has-a），形成递归组合结构。客户端通过 `Component` 接口统一处理 `Leaf` 和 `Composite`。
+
+### 运行时对象结构示例
+
+```mermaid
+graph TD
+    root["Composite: root"] --> node1["Composite: treeNode1"]
+    root --> node3["Composite: treeNode3"]
+    node1 --> node2["Composite: treeNode2"]
+    node1 --> leaf1["Leaf: leaf1"]
+    node3 --> node4["Composite: treeNode4"]
+    node3 --> leaf2["Leaf: leaf2"]
+```
 ## 要点总结
 + Composite模式采用树性结构来实现普遍存在的对象容器，从而将”一对多“的关系转化为”一对一“的关系，使得客户代码可以一致地(复用)处理对象和对象容器，
 无需关心处理的是单个的对象，还是组合的对象容器。

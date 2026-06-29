@@ -9,6 +9,30 @@
 从而使其耦合松散(管理变化)，并且可以独立地改变它们之间的交互。
 ——《设计模式》GoF
 
+## 结构
+
+```mermaid
+graph TD
+    ColleagueA["Colleague A"] --> Mediator["Mediator<br/>（中介者）"]
+    ColleagueB["Colleague B"] --> Mediator
+    ColleagueC["Colleague C"] --> Mediator
+    ColleagueD["Colleague D"] --> Mediator
+
+    Mediator --> ColleagueA
+    Mediator --> ColleagueB
+    Mediator --> ColleagueC
+    Mediator --> ColleagueD
+```
+
+> 没有中介者时，同事对象之间是网状直接引用（N×N 耦合）；引入中介者后变为星形结构，同事只与中介者通信，由中介者协调交互。
+
+### 与 Façade 的区别
+
+| 模式 | 方向 | 关注层次 |
+|------|------|----------|
+| **Façade** | 单向（客户→子系统） | 系统间 |
+| **Mediator** | 双向（同事↔同事） | 系统内 |
+
 ## 要点总结
-+ 将多个对象间发杂的关联关系解耦
++ 将多个对象间复杂的关联关系解耦
 + Facade模式是解耦系统间(单向)的对象关联关系；Mediator模式是解耦系统内各个对象之间(双向)的关联关系。

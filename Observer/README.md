@@ -10,6 +10,66 @@
 ——《 设计模式》 GoF
 
 
+## 结构演化
+
+### 阶段一：无 Observer（FileSplitter1.cpp）—— 紧耦合
+
+```mermaid
+classDiagram
+    direction TB
+
+    class FileSplitter {
+        -ProgressBar* m_progressBar
+        +split() void
+    }
+
+    class ProgressBar {
+        +setValue(float) void
+    }
+
+    class MainForm {
+    }
+
+    FileSplitter --> ProgressBar : 直接依赖
+    MainForm ..> FileSplitter : creates
+    MainForm --> ProgressBar
+```
+
+> 问题：`FileSplitter` 直接持有 `ProgressBar*`，通知机制与具体 UI 控件紧耦合，无法扩展其他通知方式。
+
+### 阶段二：Observer 模式（FileSplitter2.cpp）—— 松耦合
+
+```mermaid
+classDiagram
+    direction TB
+
+    class IProgress {
+        <<abstract>>
+        +DoProgress(float value) void*
+    }
+
+    class FileSplitter {
+        -List~IProgress*~ m_iprogressList
+        +addIProgress(IProgress*) void
+        +removeIProgress(IProgress*) void
+        +split() void
+    }
+
+    class MainForm {
+        +DoProgress(float value) void
+    }
+
+    class ConsoleNotifier {
+        +DoProgress(float value) void
+    }
+
+    IProgress <|-- MainForm
+    IProgress <|-- ConsoleNotifier
+    FileSplitter --> IProgress : 通知列表
+```
+
+> 完美：`FileSplitter` 只依赖抽象的 `IProgress` 接口。`MainForm`（UI进度条）和 `ConsoleNotifier`（控制台输出）可同时订阅通知。
+
 ## 要点总结
 + 使用面向对象的抽象，Observer模式使得我们可以独立地改变目标与观察者，从而使二者之间的依赖关系达致松耦合。
 + 目标发送通知时，无需指定观察者，通知（可以携带通知信息作为参数）会自动传播。

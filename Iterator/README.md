@@ -9,6 +9,38 @@
 提供一种方法顺序访问一个聚合对象中的各个元素，而又不暴露(稳定)该对象的内部表示。
 ——《设计模式》GoF
 
+## 结构
+
+```mermaid
+classDiagram
+    direction TB
+
+    class Iterator~T~ {
+        <<abstract>>
+        +first() void*
+        +next() void*
+        +isDone() bool*
+        +current() T*
+    }
+
+    class CollectionIterator~T~ {
+        +first() void
+        +next() void
+        +isDone() bool
+        +current() T
+    }
+
+    class MyCollection~T~ {
+        +GetIterator() Iterator~T~*
+    }
+
+    Iterator~T~ <|-- CollectionIterator~T~
+    MyCollection~T~ ..> CollectionIterator~T~ : creates
+    MyCollection~T~ ..> Iterator~T~ : returns
+```
+
+> `MyCollection` 通过 `GetIterator()` 返回迭代器，客户端只依赖 `Iterator<T>` 抽象接口，不感知集合内部结构。
+
 ## 要点总结
 + 迭代抽象：访问一个聚合对象的内容而无需暴露它的内部表示。
 + 迭代多态：为遍历不同的集合对象提供一个统一的接口，从而支持同样的算法在不同的集合结构上进行操作。

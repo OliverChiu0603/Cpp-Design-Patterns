@@ -7,7 +7,40 @@
 ## 模式定义
 将一个请求(行为)封装成一个对象，从而使你可用不用的请求对客户进行参数化；对请求排队或记录请求日志，以及支持可撤销的操作。
 ——《设计模式》GoF
+## 结构
 
+```mermaid
+classDiagram
+    direction TB
+
+    class Command {
+        <<abstract>>
+        +execute() void*
+    }
+
+    class ConcreteCommand1 {
+        -string arg
+        +execute() void
+    }
+
+    class ConcreteCommand2 {
+        -string arg
+        +execute() void
+    }
+
+    class MacroCommand {
+        -vector~Command*~ commands
+        +addCommand(Command*) void
+        +execute() void
+    }
+
+    Command <|-- ConcreteCommand1
+    Command <|-- ConcreteCommand2
+    Command <|-- MacroCommand
+    MacroCommand o-- Command : commands
+```
+
+> `MacroCommand` 是组合命令，将多个 `Command` 组合成一个，`execute()` 时依次执行所有子命令。体现了 Composite 与 Command 的结合。
 ## 要点总结
 + Command模式的根本目的在于将”行为请求者“与”行为实现者“解耦，在面向对象语言中，常见的实现手段是”将行为抽象为对象“。
 + 与C++中的函数对象类似，C++函数对象以函数签名来定义行为接口规范，更灵活性能更高。

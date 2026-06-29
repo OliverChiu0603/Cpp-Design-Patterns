@@ -8,7 +8,44 @@
 给定一个语言，定义它的文法的一种表示，并定义一种解释器，这个解释器使用该表示来解释语言中的句子。
 ——《设计模式》GoF
 
+## 结构
 
+```mermaid
+classDiagram
+    direction TB
+
+    class Expression {
+        <<abstract>>
+        +interpreter(map~char,int~ var) int*
+    }
+
+    class VarExpression {
+        -char key
+        +interpreter(map~char,int~ var) int
+    }
+
+    class SymbolExpression {
+        #Expression* left
+        #Expression* right
+    }
+
+    class AddExpression {
+        +interpreter(map~char,int~ var) int
+    }
+
+    class SubExpression {
+        +interpreter(map~char,int~ var) int
+    }
+
+    Expression <|-- VarExpression
+    Expression <|-- SymbolExpression
+    SymbolExpression <|-- AddExpression
+    SymbolExpression <|-- SubExpression
+    SymbolExpression o-- Expression : left
+    SymbolExpression o-- Expression : right
+```
+
+> `VarExpression` 是终结符表达式（叶子），`AddExpression` / `SubExpression` 是非终结符表达式（组合节点）。表达式如 `"a+b-c"` 被解析为树：`Add(Var(a), Sub(Var(b), Var(c)))`。
 ## 要点总结
 + Interpreter模式的应用场合是Interpreter模式应用中的难点，只有满足“业务规则频繁变化，且类似的结构不断重复出现，
 并且容易抽象为语法规则的问题”才适合使用Interpreter模式。

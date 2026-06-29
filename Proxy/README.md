@@ -9,5 +9,35 @@
 为其他对象提供一种代理以控制(隔离，使用接口)对这对象的访问。
 ——《设计模式》GoF
 
+## 结构
+
+```mermaid
+classDiagram
+    direction TB
+
+    class ISubject {
+        <<abstract>>
+        +process() void*
+    }
+
+    class RealSubject {
+        +process() void
+    }
+
+    class SubjectProxy {
+        +process() void
+    }
+
+    class ClientApp {
+    }
+
+    ISubject <|-- RealSubject
+    ISubject <|-- SubjectProxy
+    SubjectProxy --> RealSubject : 间接访问
+    ClientApp --> ISubject
+```
+
+> `ClientApp` 只依赖 `ISubject` 接口，通过 `SubjectProxy` 间接访问 `RealSubject`。代理可以在访问前后添加额外逻辑（权限检查、延迟加载、日志等）。
+
 ## 要点总结
 + Proxy并不一定要求保持接口完整的一致性，只要能够实现间接控制，有时候损及一些透明性是可以接受的。

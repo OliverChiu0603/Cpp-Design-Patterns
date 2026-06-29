@@ -7,7 +7,82 @@
 ## 模式定义
 使用原型实例指定创建对象的种类，然后通过拷贝这些原型来创建新的对象。
 ——《设计模式》GoF
+## 结构演化
 
+### 阶段一：普通接口（Prototype.cpp）
+
+```mermaid
+classDiagram
+    direction TB
+
+    class ISplitter {
+        <<abstract>>
+        +split() void*
+    }
+
+    class BinarySplitter {
+        +split() void
+    }
+    class TxtSplitter {
+        +split() void
+    }
+    class PictureSplitter {
+        +split() void
+    }
+    class VideoSplitter {
+        +split() void
+    }
+
+    ISplitter <|-- BinarySplitter
+    ISplitter <|-- TxtSplitter
+    ISplitter <|-- PictureSplitter
+    ISplitter <|-- VideoSplitter
+```
+
+> 此时客户端需要 `new` 具体类来创建对象。
+
+### 阶段二：添加 Clone（ConcretePrototype.cpp + Client.cpp）
+
+```mermaid
+classDiagram
+    direction TB
+
+    class ISplitter {
+        <<abstract>>
+        +split() void*
+        +clone() ISplitter*
+    }
+
+    class BinarySplitter {
+        +split() void
+        +clone() ISplitter*
+    }
+    class TxtSplitter {
+        +split() void
+        +clone() ISplitter*
+    }
+    class PictureSplitter {
+        +split() void
+        +clone() ISplitter*
+    }
+    class VideoSplitter {
+        +split() void
+        +clone() ISplitter*
+    }
+
+    class MainForm {
+        -ISplitter* prototype
+        +Button1_Click()
+    }
+
+    ISplitter <|-- BinarySplitter
+    ISplitter <|-- TxtSplitter
+    ISplitter <|-- PictureSplitter
+    ISplitter <|-- VideoSplitter
+    MainForm --> ISplitter : prototype
+```
+
+> `MainForm` 持有 `ISplitter* prototype`，通过 `prototype->clone()` 创建新对象，无需知道具体类型。与 Factory Method 不同，Prototype 通过拷贝原型创建，适合"从一个配置好的对象复制"的场景。
 ## 要点总结
 + Prototype模式同样用于隔离对象的使用者和具体类型(易变类)之间的耦合关系，它同样要求这些“易变类”拥有稳定的接口。
 + Prototype模式对于“如何创建易变类的实体对象“采用”原型克隆“的方法来做，

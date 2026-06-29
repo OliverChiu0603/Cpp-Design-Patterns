@@ -7,7 +7,25 @@
 ## 模式定义
 为子系统中的一组接口提供一个一致(稳定)的界面，Façade模式定义了一个高层接口，这个接口使得这一子系统更加容易使用(复用)。
 ——《设计模式》GoF
+## 结构
 
+```mermaid
+graph TD
+    ClientA["客户端 A"] --> Facade["Façade"]
+    ClientB["客户端 B"] --> Facade
+    ClientC["客户端 C"] --> Facade
+
+    Facade --> SubA["子系统 A"]
+    Facade --> SubB["子系统 B"]
+    Facade --> SubC["子系统 C"]
+    Facade --> SubD["子系统 D"]
+
+    SubA --> SubC
+    SubB --> SubC
+    SubC --> SubD
+```
+
+> Façade 为复杂的子系统提供一个统一的高层接口。客户端只依赖 Façade，子系统内部互相耦合但与外部解耦。
 ## 要点总结
 + 从客户程序角度来看，Façade模式简化了整个组件系统的接口，对于组件内部与外部的客户程序来说，
 达到了一种”解耦“的效果——内部子系统的任何变化不会影响到Façade接口的变化。

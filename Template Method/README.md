@@ -11,7 +11,54 @@ Template Method使得子类可以不改变(复用)一个算法的结构即可重
 某些特定步骤。
 ——《 设计模式》 GoF
 
+## 结构演化
 
+### 阶段一：无模板方法（template1）—— 客户端控制流程
+
+```mermaid
+classDiagram
+    direction TB
+
+    class Library {
+        +Step1() void
+        +Step3() void
+        +Step5() void
+    }
+
+    class Application {
+        +Step2() void
+        +Step4() void
+    }
+```
+
+> 问题：`main()` 中应用开发者必须手动按序调用 `lib.Step1() → app.Step2() → lib.Step3() → app.Step4() → lib.Step5()`，易出错。
+
+### 阶段二：Template Method 模式（template2）—— 框架控制流程
+
+```mermaid
+classDiagram
+    direction TB
+
+    class Library {
+        +Run() void
+        -Step1() void
+        -Step3() void
+        -Step5() void
+        #Step2() void*
+        #Step4() void*
+    }
+
+    class Application {
+        #Step2() void
+        #Step4() void
+    }
+
+    Library <|-- Application
+
+    note for Library "Run() 模板方法：\nStep1() → Step2() → Step3()\n→ Step4()循环 → Step5()\n\n稳定：Step1/3/5\n变化：Step2/4(虚函数)"
+```
+
+> 完美：**"不要调用我，让我来调用你"** —— `Library::Run()` 控制整体算法骨架，子类只需重写变化的步骤。
 ## 要点总结
 + Template Method模式是一种非常基础性的设计模式，在面向对象系统中有着大量的应用。它用最简洁的机制（虚函数的多态性）
 为很多应用程序框架提供了灵活的扩展点，是代码复用方面的基本实现结构。
